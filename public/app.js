@@ -667,7 +667,30 @@ const isAdmin = () => S.me && S.me.role === "admin";
 /* ---------------- gate ---------------- */
 const ROLE_LABEL = { admin: "role.admin", member: "role.member", pending: "role.pending", rejected: "role.rejected", visitor: "role.visitor" };
 
+function revealApp() {
+  return new Promise(resolve => {
+    const gate = $("#gate"), app = $("#app");
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      gate.hidden = true; app.hidden = false;
+      resolve();
+      return;
+    }
+    gate.classList.add("leaving");
+    setTimeout(() => {
+      gate.hidden = true;
+      gate.classList.remove("leaving");
+      app.hidden = false;
+      app.classList.add("entering");
+      app.addEventListener("animationend", () => app.classList.remove("entering"), { once: true });
+      resolve();
+    }, 420);
+  });
+}
+
 function showGate(mode, detail) {
+  $("#gate").classList.remove("leaving");
+  $("#app").classList.remove("entering");
   $("#gate").hidden = false;
   $("#app").hidden = true;
   const status = $("#gate-status"), gsi = $("#gsi-button"), out = $("#gate-logout");
@@ -709,7 +732,14 @@ async function onCredential(response) {
       method: "POST",
       body: JSON.stringify({ credential: response.credential })
     });
-    location.reload();
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const art = $(".gate-art");
+    if (art && !reduced) {
+      art.classList.add("charging");
+      setTimeout(() => location.reload(), 1150);
+    } else {
+      location.reload();
+    }
   } catch (err) { toast(err.message); }
 }
 
@@ -1854,8 +1884,7 @@ async function submitForm(kind, sheet, row) {
   if (me.role === "rejected") { showGate("rejected", me.email || ""); return; }
 
   S.me = me;
-  $("#gate").hidden = true;
-  $("#app").hidden = false;
+  await revealApp();
   await loadAll();
   if (isAdmin()) loadMembers();
 })();
