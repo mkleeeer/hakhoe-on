@@ -1,0 +1,20 @@
+name: Syntax check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JS syntax
+        run: |
+          for f in worker.js gcal.js ics.js translate.js public/app.js; do
+            echo "checking $f"
+            node --check "$f"
+          done

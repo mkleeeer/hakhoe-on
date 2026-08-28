@@ -3,6 +3,13 @@
 Cloudflare Workers + D1. 구글 로그인한 사람만 가입 신청이 가능하고,
 운영진 승인을 받아야 학회 내용을 볼 수 있습니다.
 
+## 문서
+- [HANDOFF.md](./HANDOFF.md) — 기능별 요약 (뭐하는 기능인지 / 코드 위치 / 설정값)
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — 전체 구조와 설계 이유
+- [API.md](./API.md) — 엔드포인트 전체 목록
+- [DEPLOYMENT.md](./DEPLOYMENT.md) — 처음부터 새로 배포하는 절차, 롤백, 백업
+- [LIMITATIONS.md](./LIMITATIONS.md) — 알려진 제한사항, 운영 전 확인사항
+
 ## 구조
 - `worker.js` — API. 인증(구글 ID 토큰 검증 + HMAC 세션 쿠키), D1 CRUD
 - `gcal.js` — 구글 캘린더 쓰기 (서비스 계정 JWT)
@@ -28,6 +35,10 @@ Cloudflare Workers + D1. 구글 로그인한 사람만 가입 신청이 가능�
 - `CALENDAR_ICS_URL` / `CALENDAR_ID` / `CALENDAR_CID` (vars) — 구글 캘린더 연동
 - `GOOGLE_SERVICE_ACCOUNT_JSON` (secret) — 구글 캘린더 쓰기(활동·일정·모집 공지 자동 등록)
 - `GOOGLE_TRANSLATE_API_KEY` (secret) — 동적 콘텐츠(공지·활동·투표 등) 한→영 번역. 없으면 원문 그대로 표시됨
+- `GOOGLE_API_KEY` (secret, 선택) — 없어도 iCal 피드 파싱으로 캘린더 읽기가 정상 작동함. 있으면
+  Calendar API v3로 직접 조회해서 더 빠르고 반복 일정 전개를 구글이 대신 처리
+
+로컬 개발용 예제는 [.dev.vars.example](./.dev.vars.example) 참고.
 
 ## 번역 (다국어)
 사이드바/상단의 `EN` 버튼으로 언어를 바꿉니다. 두 층으로 동작합니다.
@@ -40,7 +51,11 @@ Cloudflare Workers + D1. 구글 로그인한 사람만 가입 신청이 가능�
 3. `wrangler secret put GOOGLE_TRANSLATE_API_KEY` 로 등록 후 재배포
 
 ## 배포
+이미 설정된 환경에 재배포할 때는:
     npm run deploy
+
+처음부터 새로 배포하거나(다른 Cloudflare 계정 인수인계 등) D1/시크릿을 새로 만들어야 하면
+[DEPLOYMENT.md](./DEPLOYMENT.md)를 따를 것.
 
 ## 구글 OAuth 설정
 1. https://console.cloud.google.com/apis/credentials

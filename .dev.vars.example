@@ -1,0 +1,26 @@
+# 로컬 개발용 환경변수 예제. 복사해서 .dev.vars 로 저장 후 실제 값 채우기.
+# .dev.vars는 .gitignore에 이미 제외되어 있음 — 절대 커밋하지 말 것.
+#
+# cp .dev.vars.example .dev.vars
+
+# ── 필수 ──────────────────────────────────────────────
+# 세션 쿠키 서명 키. 아무 랜덤 문자열이나 가능 (예: openssl rand -hex 32)
+SESSION_SECRET=change-me-to-a-long-random-string
+
+# ── 선택: 구글 캘린더 쓰기 (활동/일정/모집 공지를 캘린더에 자동 등록) ──
+# 서비스 계정 JSON 전체를 한 줄로 (Google Cloud Console에서 발급)
+# GOOGLE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"...", ...}
+
+# ── 선택: 구글 캘린더 읽기 속도 개선 (없어도 iCal 피드 파싱으로 정상 작동) ──
+# CALENDAR_ICS_URL(공개 iCal 피드, wrangler.toml [vars]에 있음)만으로도 캘린더 읽기는 됨.
+# 여기에 GOOGLE_API_KEY까지 넣으면 Calendar API v3로 바로 조회해서 더 빠르고,
+# 반복 일정(RRULE) 전개를 구글이 대신 해줌 — ics.js 파서를 안 거침.
+# GOOGLE_API_KEY=
+
+# ── 선택: 동적 콘텐츠(공지/활동/투표 등) 한↔영 자동 번역 ──
+# 없으면 이 기능만 비활성화되고 나머지는 정상 작동
+# GOOGLE_TRANSLATE_API_KEY=
+
+# ── 참고: 아래는 시크릿이 아니라 wrangler.toml의 [vars]에 이미 들어있음 ──
+# GOOGLE_CLIENT_ID, ADMIN_EMAILS, CALENDAR_ID, CALENDAR_CID
+# 로컬에서 wrangler.toml과 다른 값으로 덮어쓰고 싶을 때만 여기 추가하면 됨.
