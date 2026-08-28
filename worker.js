@@ -1171,6 +1171,38 @@ async function handleApi(request, env, url) {
   return json({ error: '요청을 찾을 수 없습니다.' }, 404);
 }
 
+/* 정적 자산(ASSETS 바인딩)이 바이너리 파일에 Range 요청을 지원하지 않아서
+ * (텍스트 자산은 지원, 이미지/영상 같은 바이너리는 항상 200 전체 응답만 옴)
+ * <video> 태그가 로드를 포기하는 문제가 있어 여기서 직접 처리한다. */
+async function serveRangeable(request, env) {
+  const u = new URL(request.url);
+  const assetRes = await env.ASSETS.fetch(new Request(u.origin + u.pathname, { headers: { Accept: request.headers.get('Accept') || '*/*' } }));
+  if (!assetRes.ok) return assetRes;
+  const buf = await assetRes.arrayBuffer();
+  const total = buf.byteLength;
+  const headers = new Headers(assetRes.headers);
+  headers.set('Accept-Ranges', 'bytes');
+  headers.delete('Content-Length');
+
+  const range = request.headers.get('Range');
+  const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
+  if (!m) {
+    headers.set('Content-Length', String(total));
+    return new Response(buf, { status: 200, headers });
+  }
+  let start = m[1] ? parseInt(m[1], 10) : 0;
+  let end = m[2] ? parseInt(m[2], 10) : total - 1;
+  if (isNaN(start) || start < 0) start = 0;
+  if (isNaN(end) || end >= total) end = total - 1;
+  if (start > end || start >= total) {
+    headers.set('Content-Range', `bytes */${total}`);
+    return new Response(null, { status: 416, headers });
+  }
+  headers.set('Content-Range', `bytes ${start}-${end}/${total}`);
+  headers.set('Content-Length', String(end - start + 1));
+  return new Response(buf.slice(start, end + 1), { status: 206, headers });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -1181,6 +1213,9 @@ export default {
         console.error(error);
         return json({ error: '요청을 처리하는 중 문제가 생겼습니다.' }, 500);
       }
+    }
+    if (url.pathname.startsWith('/video/') && env.ASSETS && env.ASSETS.fetch) {
+      return serveRangeable(request, env);
     }
     if (env.ASSETS && env.ASSETS.fetch) return env.ASSETS.fetch(request);
     return new Response('Not found', {
