@@ -736,7 +736,7 @@ async function onCredential(response) {
     const art = $(".gate-art");
     if (art && !reduced) {
       art.classList.add("charging");
-      setTimeout(() => location.reload(), 1150);
+      setTimeout(() => location.reload(), 1300);
     } else {
       location.reload();
     }
