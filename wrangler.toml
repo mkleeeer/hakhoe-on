@@ -1,0 +1,23 @@
+name = "hakhoe-on"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+# 구글 OAuth 클라이언트 ID (공개되어도 되는 값 — secret 아님)
+# 발급 후 여기에 채워 넣습니다.
+[vars]
+GOOGLE_CLIENT_ID = "610520909889-tnuil3vgk7skkn8ch2b2h14hj76ji8vi.apps.googleusercontent.com"
+# 운영진 이메일 (쉼표로 구분). 여기 적힌 계정은 승인 없이 바로 운영진이 됩니다.
+ADMIN_EMAILS = "minkilee123@gmail.com"
+# 구글 캘린더 (공개 설정된 캘린더의 iCal 피드)
+CALENDAR_ICS_URL = "https://calendar.google.com/calendar/ical/4d2fceae2cc9973658fb69931cbf8ee0a793abd3ced8df30446e5aa475007b8a%40group.calendar.google.com/public/basic.ics"
+CALENDAR_ID = "4d2fceae2cc9973658fb69931cbf8ee0a793abd3ced8df30446e5aa475007b8a@group.calendar.google.com"
+CALENDAR_CID = "NGQyZmNlYWUyY2M5OTczNjU4ZmI2OTkzMWNiZjhlZTBhNzkzYWJkM2NlZDhkZjMwNDQ2ZTVhYTQ3NTAwN2I4YUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hakhoe-on"
+database_id = "948b6eaf-e7ca-44ff-b9ca-3ef2631183bc"

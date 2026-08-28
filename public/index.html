@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#8a1219">
+<title>세종 금융학회</title>
+<meta name="description" content="세종 금융학회의 활동, 일정, 공지, 투표, 자료를 한곳에서 운영하는 학회 플랫폼">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script>
+(function () {
+  var lang = "ko";
+  try { lang = localStorage.getItem("sfa.lang") || "ko"; } catch (e) {}
+  document.documentElement.lang = lang === "en" ? "en" : "ko";
+  var s = document.createElement("script");
+  s.src = "https://accounts.google.com/gsi/client?hl=" + (lang === "en" ? "en" : "ko");
+  s.async = true; s.defer = true;
+  document.head.appendChild(s);
+})();
+</script>
+</head>
+<body>
+
+<!-- ===== 로그인 게이트 ===== -->
+<div class="gate" id="gate" hidden>
+  <button class="lang-toggle gate-lang" id="gate-lang-toggle" type="button"></button>
+  <div class="gate-art" aria-hidden="true">
+    <img src="/img/horse-black.png" alt="">
+  </div>
+  <div class="gate-box">
+    <span class="gate-mark">SF</span>
+    <p class="eyebrow" style="color:rgba(240,230,220,.6)">Sejong Finance Association</p>
+    <h1 data-i18n="brand.name">세종 금융학회</h1>
+    <p class="gate-lead" id="gate-lead" data-i18n-html="gate.lead">학회원만 이용할 수 있습니다.<br>구글 계정으로 로그인해 주세요.</p>
+    <div id="gsi-button" class="gsi-slot"></div>
+    <div id="gate-status" class="gate-status" hidden></div>
+    <button class="btn gate-out" id="gate-logout" hidden data-i18n="gate.switchAccount">다른 계정으로 로그인</button>
+    <p class="gate-foot" id="gate-foot" data-i18n="gate.foot">로그인하면 가입 신청이 접수되고, 운영진 승인 후 이용할 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- ===== 앱 ===== -->
+<div class="shell" id="app" hidden>
+  <aside class="rail">
+    <button class="brand" data-go="home">
+      <span class="brand-mark">SF</span>
+      <span><b data-i18n="brand.name">세종 금융학회</b><small>Sejong Finance</small></span>
+    </button>
+    <nav class="railnav" id="railnav" aria-label="주 메뉴"></nav>
+    <div class="rail-foot">
+      <div>
+        <div class="term-top"><span id="term-name">—</span><b class="tnum" id="term-pct">0%</b></div>
+        <div class="track"><i id="term-bar" style="width:0%"></i></div>
+        <small id="term-note"></small>
+      </div>
+      <div class="who" id="who">
+        <span class="av" id="who-av">?</span>
+        <span style="min-width:0"><b id="who-name">—</b><small id="who-role">—</small></span>
+        <button class="who-out" id="logout" aria-label="로그아웃">↪</button>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow" id="today"></p>
+        <h1 id="page-title">좋은 하루예요.</h1>
+      </div>
+      <div class="top-actions">
+        <button class="lang-toggle" id="lang-toggle" type="button"></button>
+        <span class="save-chip" id="save-chip"><i></i><span id="save-text">연결됨</span></span>
+      </div>
+    </header>
+
+    <div class="banner" id="banner" hidden></div>
+
+    <!-- 홈 -->
+    <section class="page on" id="p-home">
+      <article class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow" id="goal-label">이번 학기 우리의 방향</p>
+          <h2><span id="goal-lead"></span><br><em id="goal-accent"></em></h2>
+          <p id="goal-note"></p>
+          <button class="btn" data-go="office" data-i18n="home.roadmap">운영 로드맵 보기 →</button>
+        </div>
+        <div class="hero-goals">
+          <div class="hero-goals-head">
+            <b class="tnum" id="goal-count">—</b>
+            <span data-i18n="home.coreGoals">핵심 목표</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="grid-2">
+        <div class="col">
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Up next</p><h3 data-i18n="home.upcoming">다가오는 일정</h3></div>
+              <button class="btn ghost sm" data-go="calendar" data-i18n="common.seeAll">전체보기</button></div>
+            <div class="rows" id="home-schedules"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Activities</p><h3 data-i18n="home.recentActivities">최근 활동</h3></div>
+              <button class="btn ghost sm" data-go="activities" data-i18n="common.seeAll">전체보기</button></div>
+            <div class="rows" id="home-activities"></div>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Notice</p><h3 data-i18n="home.newNotices">새로운 소식</h3></div>
+              <button class="btn ghost sm" data-go="notices" data-i18n="common.seeAll">전체보기</button></div>
+            <div id="home-notices"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Decide</p><h3 data-i18n="home.activePolls">진행 중인 투표</h3></div>
+              <button class="btn ghost sm" data-go="votes" data-i18n="common.seeAll">전체보기</button></div>
+            <div id="home-polls"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- 활동 -->
+    <section class="page" id="p-activities">
+      <div class="intro">
+        <div><p class="eyebrow">Activities</p><h2 data-i18n="activities.title">활동 기록</h2>
+          <p data-i18n="activities.desc">무엇을 했고 몇 명이 함께했는지 남기면, 학기 말 보고가 그대로 완성됩니다.</p></div>
+        <button class="btn primary" data-new="activity">＋<span data-i18n="activities.newBtn">&nbsp;활동 기록</span></button>
+      </div>
+      <div class="summary"><span class="pulse"></span><b id="act-count">—</b>
+        <p data-i18n="activities.tracks">주제 분류는 경제 · 비즈니스 · 국가별 주제 세 트랙을 따릅니다.</p></div>
+      <div class="cards" id="activity-list"></div>
+    </section>
+
+    <!-- 일정 -->
+    <section class="page" id="p-calendar">
+      <div class="intro">
+        <div><p class="eyebrow">Calendar</p><h2 data-i18n="calendar.title">학회 일정</h2>
+          <p data-i18n="calendar.desc">구글 캘린더와 앱에 등록한 일정을 함께 보여줍니다.</p></div>
+        <div style="display:flex;gap:7px;align-items:center">
+          <a class="btn" id="gcal-open" href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer" data-i18n="calendar.openGoogle">구글 캘린더 ↗</a>
+          <button class="btn primary" data-new="schedule">＋<span data-i18n="calendar.newBtn">&nbsp;일정 등록</span></button>
+        </div>
+      </div>
+      <section class="panel gcal-panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">Google Calendar</p><h3 id="gcal-name" data-i18n="calendar.sharedName">학회 공유 캘린더</h3></div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span class="tag quiet" id="gcal-state" data-i18n="calendar.checking">확인 중</span>
+            <button class="btn ghost sm" id="gcal-refresh" data-i18n="common.refresh">새로고침</button>
+          </div>
+        </div>
+        <div class="gcal-frame"><iframe id="gcal-embed" title="구글 캘린더" loading="lazy"></iframe></div>
+        <p class="gcal-hint" data-i18n="calendar.hint">일정 추가·수정은 구글 캘린더에서 하시면 이곳에 바로 반영됩니다. 학회 캘린더에 접근 권한이 있는 계정으로 로그인해 있으면 일정 제목까지 보입니다.</p>
+      </section>
+      <div class="panel cal" style="margin-top:1px">
+        <div class="panel-head"><div><p class="eyebrow">In app</p><h3 data-i18n="calendar.inApp">앱에 등록한 일정</h3></div>
+          <span class="tag quiet" id="sch-count">0</span></div>
+        <div class="rows" id="schedule-list"></div>
+      </div>
+    </section>
+
+    <!-- 공지 -->
+    <section class="page" id="p-notices">
+      <div class="intro">
+        <div><p class="eyebrow">Notice</p><h2 data-i18n="notices.title">소식과 결정</h2>
+          <p data-i18n="notices.desc">중요한 공지는 위로 고정해 아무도 놓치지 않게 하세요.</p></div>
+        <button class="btn primary admin-only" data-new="notice">＋<span data-i18n="notices.newBtn">&nbsp;공지 작성</span></button>
+      </div>
+      <div class="listcard" id="notice-list"></div>
+    </section>
+
+    <!-- 투표 -->
+    <section class="page" id="p-votes">
+      <div class="intro">
+        <div><p class="eyebrow">Vote &amp; discuss</p><h2 data-i18n="votes.title">함께 결정하기</h2>
+          <p data-i18n="votes.desc">안건을 충분히 읽고 한 표를 행사한 뒤, 서로의 근거를 나눠보세요.</p></div>
+        <button class="btn primary admin-only" data-new="poll">＋<span data-i18n="votes.newBtn">&nbsp;투표 열기</span></button>
+      </div>
+      <div class="summary"><span class="pulse"></span><b id="poll-count">—</b>
+        <p data-i18n="votes.hint">운영진이 투표를 열며, 마감 전까지 선택을 바꿀 수 있습니다.</p></div>
+      <div class="poll" id="poll-list"></div>
+    </section>
+
+    <!-- 건의 -->
+    <section class="page" id="p-ideas">
+      <div class="intro">
+        <div><p class="eyebrow">Suggestions</p><h2 data-i18n="ideas.title">건의 게시판</h2>
+          <p data-i18n="ideas.desc">학회에 바라는 점을 자유롭게 올려주세요. 공감이 많은 건의부터 운영진이 검토합니다.</p></div>
+        <button class="btn primary" data-new="idea">＋<span data-i18n="ideas.newBtn">&nbsp;건의하기</span></button>
+      </div>
+      <div class="summary"><span class="pulse"></span><b id="idea-count">—</b>
+        <p data-i18n="ideas.hint">공감 버튼으로 다른 사람의 건의에 힘을 보탤 수 있습니다.</p></div>
+      <div class="ideas" id="idea-list"></div>
+    </section>
+
+    <!-- 자료실 -->
+    <section class="page" id="p-archive">
+      <div class="intro">
+        <div><p class="eyebrow">Archive</p><h2 data-i18n="archive.title">자료실</h2>
+          <p data-i18n="archive.desc">구글 드라이브 폴더를 그대로 띄웁니다. 파일을 누르면 드라이브에서 열립니다.</p></div>
+        <a class="btn primary" id="drive-open" href="#" target="_blank" rel="noopener noreferrer" data-i18n="archive.openDrive">드라이브에서 열기 ↗</a>
+      </div>
+
+      <section class="panel drive-panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">Google Drive</p><h3 data-i18n="archive.sharedFolder">학회 공유 폴더</h3></div>
+          <button class="btn ghost sm" id="drive-refresh" data-i18n="common.refresh">새로고침</button>
+        </div>
+        <div class="drive-frame"><iframe id="drive-embed" title="구글 드라이브 폴더" loading="lazy"></iframe></div>
+        <p class="drive-hint" id="drive-hint" data-i18n-html="archive.driveHint">폴더가 안 보이면 드라이브에서 <b>링크가 있는 모든 사용자</b>에게 공유되어 있는지 확인해 주세요.</p>
+      </section>
+
+      <div class="intro" style="margin-top:26px">
+        <div><p class="eyebrow">Links</p><h2 data-i18n="archive.linksTitle">직접 등록한 링크</h2>
+          <p data-i18n="archive.linksDesc">드라이브 밖의 자료나 자주 쓰는 문서를 태그와 함께 모아둡니다.</p></div>
+        <button class="btn primary" data-new="material">＋<span data-i18n="archive.newBtn">&nbsp;자료 등록</span></button>
+      </div>
+      <div class="searchbar"><span>⌕</span><input id="doc-search" data-i18n-placeholder="archive.search" placeholder="자료 이름이나 태그로 검색" autocomplete="off"></div>
+      <div class="cards" id="material-list"></div>
+    </section>
+
+    <!-- 운영실 -->
+    <section class="page" id="p-office">
+      <div class="intro">
+        <div><p class="eyebrow">Operations</p><h2 data-i18n="office.title">운영실</h2>
+          <p data-i18n="office.desc">학기의 방향과 연구 트랙, 학회원 승인을 관리합니다.</p></div>
+      </div>
+      <div class="grid-2">
+        <div class="col">
+          <section class="panel admin-only" id="members-panel">
+            <div class="panel-head"><div><p class="eyebrow">Membership</p><h3 data-i18n="office.members">학회원 승인</h3></div>
+              <span class="tag pin" id="pending-count" hidden>0</span></div>
+            <div id="members-list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow" id="road-term">—</p><h3 data-i18n="office.roadmap">학기 운영 로드맵</h3></div>
+              <span style="display:flex;gap:6px;align-items:center">
+                <span class="tag vote" id="road-now">—</span>
+                <button class="btn ghost sm admin-only" id="roadmap-edit-btn" data-i18n="common.edit">수정</button>
+              </span></div>
+            <div class="road" id="roadmap"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Research tracks</p><h3 data-i18n="office.topics">연구 주제</h3></div></div>
+            <div class="topics" id="topics"></div>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Recruitment</p><h3 data-i18n="office.recruit">리크루팅</h3></div>
+              <button class="btn ghost sm admin-only" data-new="recruit" data-i18n="common.edit">수정</button></div>
+            <dl class="recruit" id="recruit"></dl>
+          </section>
+          <section class="panel admin-only">
+            <div class="panel-head"><div><p class="eyebrow">Settings</p><h3 data-i18n="office.settings">학기 설정</h3></div></div>
+            <div class="menu">
+              <button data-new="term"><span><b data-i18n="office.termSettings">학기와 진행률</b><small id="set-term">—</small></span><em>›</em></button>
+              <button data-new="goal"><span><b data-i18n="office.goalSettings">이번 학기 방향</b><small id="set-goal">—</small></span><em>›</em></button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" id="tabbar" aria-label="모바일 메뉴"></nav>
+</div>
+
+<div id="modal-root"></div>
+<div id="confirm-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
