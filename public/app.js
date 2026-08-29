@@ -729,27 +729,17 @@ $("#lang-toggle").addEventListener("click", toggleLang);
 /* ---------------- 로그인 성공 시 말 연출 (평면 로고 → 입체 렌더링) ---------------- */
 function playGateHorseCharge() {
   return new Promise(resolve => {
-    const video = $("#gate-charge-video");
-    const box = $(".gate-box");
+    const wrap = $("#gate-art-inner");
+    const video = $("#gate-horse-video");
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!video || reduced) { resolve(); return; }
+    if (!wrap || !video || reduced) { resolve(); return; }
     let done = false;
     const finish = () => { if (done) return; done = true; resolve(); };
-
-    const startVideo = () => {
-      video.addEventListener("ended", finish, { once: true });
-      video.currentTime = 0;
-      video.classList.add("playing");
-      video.play().then(() => {}).catch(finish);
-      setTimeout(finish, 9500); // 영상 로드 실패 등 대비한 안전장치
-    };
-
-    if (box) {
-      box.classList.add("fading");
-      setTimeout(startVideo, 550); // 텍스트/버튼이 사라지고 순수 실루엣만 남는 시간
-    } else {
-      startVideo();
-    }
+    video.addEventListener("ended", finish, { once: true });
+    video.currentTime = 0;
+    wrap.classList.add("charging"); // 영상 첫 프레임 = 로고라서 교체 시 컷처럼 안 보임
+    video.play().catch(finish);
+    setTimeout(finish, 6000); // 영상 로드 실패 등 대비한 안전장치
   });
 }
 
