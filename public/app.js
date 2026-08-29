@@ -30,7 +30,7 @@ const STR = {
     "common.saved": "저장했습니다.", "common.loading": "불러오는 중…", "common.connected": "연결됨",
     "common.loadFailed": "불러오지 못함", "common.none": "—", "common.location": "장소 미정",
 
-    "home.roadmap": "운영 로드맵 보기 →", "home.roadmapTitle": "이번 학기 로드맵", "home.upcoming": "다가오는 일정", "home.recentActivities": "최근 활동",
+    "home.roadmap": "운영 로드맵 보기 →", "home.upcoming": "다가오는 일정", "home.recentActivities": "최근 활동",
     "home.newNotices": "새로운 소식", "home.activePolls": "진행 중인 투표",
     "home.noUpcoming": "다가오는 일정이 없습니다.", "home.noActivities": "아직 기록된 활동이 없습니다.",
     "home.noNotices": "게시된 공지가 없습니다.", "home.noPolls": "진행 중인 투표가 없습니다.",
@@ -210,7 +210,7 @@ const STR = {
     "common.saved": "Saved.", "common.loading": "Loading…", "common.connected": "Connected",
     "common.loadFailed": "Couldn't load", "common.none": "—", "common.location": "Location TBD",
 
-    "home.roadmap": "See the roadmap →", "home.roadmapTitle": "This Term's Roadmap", "home.upcoming": "Upcoming", "home.recentActivities": "Recent activities",
+    "home.roadmap": "See the roadmap →", "home.upcoming": "Upcoming", "home.recentActivities": "Recent activities",
     "home.newNotices": "Latest notices", "home.activePolls": "Open polls",
     "home.noUpcoming": "Nothing coming up yet.", "home.noActivities": "No activities logged yet.",
     "home.noNotices": "No notices posted yet.", "home.noPolls": "No polls running right now.",
@@ -858,8 +858,6 @@ function renderChrome() {
   $("#today").textContent = LANG === "en"
     ? n.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
     : n.getFullYear() + "년 " + (n.getMonth() + 1) + "월 " + n.getDate() + "일 " + WD_KO[n.getDay()] + "요일";
-  const wsjDate = $("#wsj-date");
-  if (wsjDate) wsjDate.textContent = $("#today").textContent;
   const term = (S.settings && S.settings.term) || {};
   const pct = Math.max(0, Math.min(100, Number(term.progress) || 0));
   $("#term-name").textContent = tx(term.name) || t("office.term");
@@ -955,7 +953,6 @@ function renderHome() {
     "<time>" + fmtShort(p.deadline) + t("home.deadline") + "</time></button>"
   ).join("") : '<p style="color:var(--muted);font-size:11px">' + esc(t("home.noPolls")) + "</p>";
 }
-
 
 const canEdit = row => isAdmin() || row.author_id === S.me.id;
 const canDelete = canEdit;

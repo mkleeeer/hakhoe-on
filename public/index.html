@@ -8,7 +8,7 @@
 <meta name="description" content="세종 금융학회의 활동, 일정, 공지, 투표, 자료를 한곳에서 운영하는 학회 플랫폼">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <script>
 (function () {
@@ -83,18 +83,20 @@
 
     <!-- 홈 -->
     <section class="page on" id="p-home">
-      <header class="wsj-masthead">
-        <div class="wsj-masthead-top">
-          <span class="wsj-date" id="wsj-date"></span>
-          <span class="wsj-kicker" id="goal-label">이번 학기 우리의 방향</span>
+      <article class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow" id="goal-label">이번 학기 우리의 방향</p>
+          <h2><span id="goal-lead"></span><br><em id="goal-accent"></em></h2>
+          <p id="goal-note"></p>
+          <button class="btn" data-go="office" data-i18n="home.roadmap">운영 로드맵 보기 →</button>
         </div>
-        <h1 class="wsj-headline"><span id="goal-lead"></span> <em id="goal-accent"></em></h1>
-        <p class="wsj-dek" id="goal-note"></p>
-        <div class="wsj-masthead-foot">
-          <button class="wsj-link" data-go="office" data-i18n="home.roadmap">운영 로드맵 보기 →</button>
-          <span class="wsj-goalcount"><b class="tnum" id="goal-count">—</b><span data-i18n="home.coreGoals">핵심 목표</span></span>
+        <div class="hero-goals">
+          <div class="hero-goals-head">
+            <b class="tnum" id="goal-count">—</b>
+            <span data-i18n="home.coreGoals">핵심 목표</span>
+          </div>
         </div>
-      </header>
+      </article>
 
       <div class="grid-2">
         <div class="col">
