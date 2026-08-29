@@ -32,13 +32,15 @@ npx wrangler d1 migrations apply hakhoe-on --local     # 로컬 개발용 D1에 
 이 단계를 건너뛰어도 첫 요청 때 자동으로 만들어지긴 합니다. 그래도 명시적으로 적용해두는 걸 권장.)
 
 ### 4. 환경변수 설정
-`wrangler.toml`의 `[vars]`에 있는 `GOOGLE_CLIENT_ID`, `ADMIN_EMAILS`, `CALENDAR_*`를
-본인 값으로 교체. **`ADMIN_EMAILS`에 본인 구글 이메일을 넣어야 첫 로그인 시 자동으로
-운영진이 됩니다** (승인 절차 없이 즉시 admin).
+`wrangler.toml`의 `[vars]`에 있는 `GOOGLE_CLIENT_ID`, `CALENDAR_*`를 본인 값으로 교체.
+`ADMIN_EMAILS`는 개인정보라 vars가 아니라 secret으로 관리하므로 아래 5단계에서
+`wrangler secret put ADMIN_EMAILS`로 등록. **본인 구글 이메일을 넣어야 첫 로그인 시
+자동으로 운영진이 됩니다** (승인 절차 없이 즉시 admin).
 
 시크릿은 다음 명령으로 등록 (README.md "설정값" 표 참고):
 ```
 npx wrangler secret put SESSION_SECRET
+npx wrangler secret put ADMIN_EMAILS                  # 필수: 본인 구글 이메일
 npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON   # 선택: 캘린더 쓰기
 npx wrangler secret put GOOGLE_TRANSLATE_API_KEY       # 선택: 번역
 ```

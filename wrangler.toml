@@ -6,8 +6,8 @@ compatibility_date = "2025-09-01"
 # 발급 후 여기에 채워 넣습니다.
 [vars]
 GOOGLE_CLIENT_ID = "610520909889-tnuil3vgk7skkn8ch2b2h14hj76ji8vi.apps.googleusercontent.com"
-# 운영진 이메일 (쉼표로 구분). 여기 적힌 계정은 승인 없이 바로 운영진이 됩니다.
-ADMIN_EMAILS = "minkilee123@gmail.com"
+# 운영진 이메일(쉼표 구분, 승인 없이 바로 운영진이 됨)은 실제 개인 이메일이 노출되면
+# 안 되므로 여기 평문으로 안 두고 시크릿으로 등록: wrangler secret put ADMIN_EMAILS
 # 구글 캘린더 (공개 설정된 캘린더의 iCal 피드)
 CALENDAR_ICS_URL = "https://calendar.google.com/calendar/ical/4d2fceae2cc9973658fb69931cbf8ee0a793abd3ced8df30446e5aa475007b8a%40group.calendar.google.com/public/basic.ics"
 CALENDAR_ID = "4d2fceae2cc9973658fb69931cbf8ee0a793abd3ced8df30446e5aa475007b8a@group.calendar.google.com"

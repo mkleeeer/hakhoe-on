@@ -31,7 +31,8 @@ Cloudflare Workers + D1. 구글 로그인한 사람만 가입 신청이 가능�
 ## 설정값
 - `SESSION_SECRET` (secret) — 세션 쿠키 서명 키. `wrangler secret put SESSION_SECRET`
 - `GOOGLE_CLIENT_ID` (vars) — 구글 OAuth 클라이언트 ID. 공개되어도 되는 값
-- `ADMIN_EMAILS` (vars) — 운영진 구글 이메일, 쉼표로 구분
+- `ADMIN_EMAILS` (secret) — 운영진 구글 이메일, 쉼표로 구분. `wrangler secret put ADMIN_EMAILS`
+  (개인정보라 저장소에 평문으로 안 남도록 vars가 아니라 secret으로 관리)
 - `CALENDAR_ICS_URL` / `CALENDAR_ID` / `CALENDAR_CID` (vars) — 구글 캘린더 연동
 - `GOOGLE_SERVICE_ACCOUNT_JSON` (secret) — 구글 캘린더 쓰기(활동·일정·모집 공지 자동 등록)
 - `GOOGLE_TRANSLATE_API_KEY` (secret) — 동적 콘텐츠(공지·활동·투표 등) 한→영 번역. 없으면 원문 그대로 표시됨
