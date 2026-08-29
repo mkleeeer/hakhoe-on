@@ -729,13 +729,16 @@ $("#lang-toggle").addEventListener("click", toggleLang);
 /* ---------------- 로그인 성공 시 말 연출 (평면 로고 → 입체 렌더링) ---------------- */
 function playGateHorseCharge() {
   return new Promise(resolve => {
-    const wrap = $("#gate-art-inner");
+    const video = $("#gate-charge-video");
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!wrap || reduced) { resolve(); return; }
-    wrap.classList.remove("charging");
-    void wrap.offsetWidth; // 강제 리플로우 — 재로그인 시 애니메이션 재시작 보장
-    wrap.classList.add("charging");
-    setTimeout(resolve, 1300);
+    if (!video || reduced) { resolve(); return; }
+    let done = false;
+    const finish = () => { if (done) return; done = true; resolve(); };
+    video.addEventListener("ended", finish, { once: true });
+    video.currentTime = 0;
+    video.classList.add("playing");
+    video.play().then(() => {}).catch(finish);
+    setTimeout(finish, 9500); // 영상 로드 실패 등 대비한 안전장치
   });
 }
 
