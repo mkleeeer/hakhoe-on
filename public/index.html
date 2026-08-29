@@ -83,20 +83,39 @@
 
     <!-- 홈 -->
     <section class="page on" id="p-home">
-      <article class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow" id="goal-label">이번 학기 우리의 방향</p>
-          <h2><span id="goal-lead"></span><br><em id="goal-accent"></em></h2>
-          <p id="goal-note"></p>
-          <button class="btn" data-go="office" data-i18n="home.roadmap">운영 로드맵 보기 →</button>
-        </div>
-        <div class="hero-goals">
-          <div class="hero-goals-head">
-            <b class="tnum" id="goal-count">—</b>
-            <span data-i18n="home.coreGoals">핵심 목표</span>
+      <section class="cinema-scroll" id="cinema" aria-label="세종 금융학회 홈 스크롤 스토리">
+        <div class="stage">
+          <div class="c-world">
+            <div class="c-sky"></div>
+            <div class="c-back-stack">
+              <img class="c-scene c-mark" src="/img/horse-black.png" alt="">
+            </div>
+            <h1 class="c-title" id="c-title" data-i18n="brand.name">세종 금융학회</h1>
+            <div class="c-intro" id="c-intro">
+              <p id="c-intro-p"></p>
+              <div class="c-tags" id="c-tags"></div>
+            </div>
+            <section class="c-panel c-panel-goal" id="c-panel-goal">
+              <h2 id="c-panel-goal-h"></h2>
+              <p id="c-panel-goal-p"></p>
+              <dl class="c-facts" id="c-panel-goal-facts"></dl>
+            </section>
+            <section class="c-panel c-panel-roadmap" id="c-panel-roadmap">
+              <h2 data-i18n="home.roadmapTitle">이번 학기 로드맵</h2>
+              <p id="c-panel-roadmap-p"></p>
+              <button class="c-note-btn" data-go="office"><span aria-hidden="true">↗</span><span data-i18n="home.roadmap">운영 로드맵 보기</span></button>
+            </section>
+            <div class="c-shade"></div>
+            <div class="c-sights" id="c-sights" aria-label="다가오는 일정">
+              <div class="c-sights-track" id="c-sights-track"></div>
+            </div>
+            <div class="c-sights-controls" id="c-sights-controls">
+              <button class="c-sight-nav c-sight-prev" aria-label="이전">←</button>
+              <button class="c-sight-nav c-sight-next" aria-label="다음">→</button>
+            </div>
           </div>
         </div>
-      </article>
+      </section>
 
       <div class="grid-2">
         <div class="col">

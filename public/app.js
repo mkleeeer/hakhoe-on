@@ -30,7 +30,7 @@ const STR = {
     "common.saved": "저장했습니다.", "common.loading": "불러오는 중…", "common.connected": "연결됨",
     "common.loadFailed": "불러오지 못함", "common.none": "—", "common.location": "장소 미정",
 
-    "home.roadmap": "운영 로드맵 보기 →", "home.upcoming": "다가오는 일정", "home.recentActivities": "최근 활동",
+    "home.roadmap": "운영 로드맵 보기 →", "home.roadmapTitle": "이번 학기 로드맵", "home.upcoming": "다가오는 일정", "home.recentActivities": "최근 활동",
     "home.newNotices": "새로운 소식", "home.activePolls": "진행 중인 투표",
     "home.noUpcoming": "다가오는 일정이 없습니다.", "home.noActivities": "아직 기록된 활동이 없습니다.",
     "home.noNotices": "게시된 공지가 없습니다.", "home.noPolls": "진행 중인 투표가 없습니다.",
@@ -210,7 +210,7 @@ const STR = {
     "common.saved": "Saved.", "common.loading": "Loading…", "common.connected": "Connected",
     "common.loadFailed": "Couldn't load", "common.none": "—", "common.location": "Location TBD",
 
-    "home.roadmap": "See the roadmap →", "home.upcoming": "Upcoming", "home.recentActivities": "Recent activities",
+    "home.roadmap": "See the roadmap →", "home.roadmapTitle": "This Term's Roadmap", "home.upcoming": "Upcoming", "home.recentActivities": "Recent activities",
     "home.newNotices": "Latest notices", "home.activePolls": "Open polls",
     "home.noUpcoming": "Nothing coming up yet.", "home.noActivities": "No activities logged yet.",
     "home.noNotices": "No notices posted yet.", "home.noPolls": "No polls running right now.",
@@ -952,6 +952,185 @@ function renderHome() {
     "<p>" + p.total + t("home.attendees") + " · " + left(p.deadline) + "</p></div>" +
     "<time>" + fmtShort(p.deadline) + t("home.deadline") + "</time></button>"
   ).join("") : '<p style="color:var(--muted);font-size:11px">' + esc(t("home.noPolls")) + "</p>";
+
+  populateCinemaHome();
+  initCinemaScroll();
+}
+
+/* ---------------- 홈 시네마틱 스크롤 ---------------- */
+const cClamp = (v, min, max) => { min = min === undefined ? 0 : min; max = max === undefined ? 1 : max; return Math.min(max, Math.max(min, v)); };
+const cSmoothstep = (e0, e1, v) => { const x = cClamp((v - e0) / (e1 - e0)); return x * x * (3 - 2 * x); };
+const cLerp = (a, b, tt) => a + (b - a) * tt;
+function cSegmentInOut(s, a, b, c, d) {
+  const enter = cSmoothstep(a, b, s), exit = cSmoothstep(c, d, s);
+  return { enter, exit, active: enter * (1 - exit) };
+}
+
+function populateCinemaHome() {
+  const st = S.settings || {};
+  const term = st.term || {};
+  const g = st.goal || {};
+  const goalItems = Array.isArray(g.items) ? g.items.filter(x => x && x.title) : [];
+  const goalCount = goalItems.length || g.count || 0;
+
+  const introP = $("#c-intro-p");
+  if (introP) introP.textContent = tx(g.note) || [tx(g.lead), tx(g.accent)].filter(Boolean).join(" ");
+
+  const tagsEl = $("#c-tags");
+  if (tagsEl) {
+    const tags = [tx(term.name), goalCount ? (pad(goalCount) + " " + t("home.coreGoals")) : "", t("home.upcoming")].filter(Boolean);
+    tagsEl.innerHTML = tags.map(x => "<span>" + esc(x) + "</span>").join("");
+  }
+
+  const gh = $("#c-panel-goal-h");
+  if (gh) gh.textContent = [tx(g.lead), tx(g.accent)].filter(Boolean).join(" ") || t("home.goalLabel");
+  const gp = $("#c-panel-goal-p");
+  if (gp) gp.textContent = tx(g.note) || "";
+  const gf = $("#c-panel-goal-facts");
+  if (gf) {
+    const pct = Math.max(0, Math.min(100, Number(term.progress) || 0));
+    gf.innerHTML =
+      "<div><dt>" + pct + "%</dt><dd>" + esc(tx(term.name) || t("office.term")) + "</dd></div>" +
+      "<div><dt>" + pad(goalCount) + "</dt><dd>" + esc(t("home.coreGoals")) + "</dd></div>";
+  }
+
+  const rp = $("#c-panel-roadmap-p");
+  if (rp) {
+    const rm = Array.isArray(st.roadmap) ? st.roadmap : [];
+    rp.textContent = rm.length ? rm.map(r => tx(r.title)).filter(Boolean).slice(0, 3).join("  ·  ") : "";
+  }
+
+  setupCinemaSights();
+}
+
+let cinemaSights = { cards: [], active: 0, original: 0 };
+function setupCinemaSights() {
+  const track = $("#c-sights-track");
+  if (!track) return;
+  const up = allEvents().filter(s => !ended(s.start_at)).slice(0, 5);
+  if (!up.length) { track.innerHTML = ""; cinemaSights = { cards: [], active: 0, original: 0 }; return; }
+  const cardHtml = up.map(s => {
+    return '<article class="c-sight-card" tabindex="0" role="button">' +
+      '<span class="c-sight-kicker">' + esc(fmtDay(s.start_at)) + '</span>' +
+      "<h3>" + esc(trim(tx(s.title), 26)) + "</h3>" +
+      "<p>" + esc(tx(s.location) || t("common.location")) + "</p></article>";
+  }).join("");
+  track.innerHTML = cardHtml + cardHtml + cardHtml;
+  const cards = $$(".c-sight-card", track);
+  cards.forEach((card, i) => {
+    card.addEventListener("click", () => { cinemaSights.active = i; updateCinemaSights(); });
+  });
+  cinemaSights = { cards, active: up.length, original: up.length };
+  updateCinemaSights();
+}
+function updateCinemaSights() {
+  const track = $("#c-sights-track");
+  if (!track || !cinemaSights.cards.length) return;
+  const cardW = cinemaSights.cards[0].getBoundingClientRect().width;
+  const gap = parseFloat(getComputedStyle(track).columnGap) || 14;
+  track.style.setProperty("--c-sights-shift", (-(cardW + gap) * cinemaSights.active) + "px");
+}
+function jumpCinemaSights(i) {
+  const track = $("#c-sights-track");
+  if (!track) return;
+  track.classList.add("is-jumping");
+  cinemaSights.active = i;
+  updateCinemaSights();
+  requestAnimationFrame(() => requestAnimationFrame(() => track.classList.remove("is-jumping")));
+}
+function moveCinemaSights(dir) {
+  if (!cinemaSights.cards.length) return;
+  cinemaSights.active += dir;
+  updateCinemaSights();
+  const o = cinemaSights.original;
+  if (cinemaSights.active >= o * 2) jumpCinemaSights(cinemaSights.active - o);
+  else if (cinemaSights.active < o) jumpCinemaSights(cinemaSights.active + o);
+}
+
+let cinemaScrollState = null;
+function initCinemaScroll() {
+  const section = $("#cinema");
+  if (!section || cinemaScrollState) return;
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  const st = { targetMouseX: 0, targetMouseY: 0, mouseX: 0, mouseY: 0, targetScroll: 0, smoothScroll: 0, initialized: false, rafPending: false };
+  cinemaScrollState = st;
+
+  function getScrollDistance() {
+    const r = section.getBoundingClientRect();
+    return cClamp(-r.top, 0, section.offsetHeight - window.innerHeight);
+  }
+
+  function requestTick() {
+    if (st.rafPending) return;
+    st.rafPending = true;
+    requestAnimationFrame(update);
+  }
+
+  function update() {
+    st.rafPending = false;
+    st.targetScroll = getScrollDistance();
+    if (!st.initialized || (reduceMotion && reduceMotion.matches)) { st.smoothScroll = st.targetScroll; st.initialized = true; }
+    else st.smoothScroll = cLerp(st.smoothScroll, st.targetScroll, 0.14);
+    if (Math.abs(st.smoothScroll - st.targetScroll) < 0.08) st.smoothScroll = st.targetScroll;
+
+    st.mouseX = cLerp(st.mouseX, st.targetMouseX, 0.12);
+    st.mouseY = cLerp(st.mouseY, st.targetMouseY, 0.12);
+
+    const s = st.smoothScroll;
+    const progress = cClamp(s / 1900);
+    const introExit = cSmoothstep(60, 420, s);
+    const goal = cSegmentInOut(s, 380, 620, 980, 1180);
+    const roadmap = cSegmentInOut(s, 1180, 1420, 1780, 1900);
+    const sightsEnter = Math.pow(cSmoothstep(1750, 2150, s), 1.4);
+    const sightsControlsEnter = cSmoothstep(2000, 2200, s);
+    const panelActive = cClamp(goal.active + roadmap.active);
+    const reduced = reduceMotion && reduceMotion.matches;
+    const mx = reduced ? 0 : st.mouseX;
+    const my = reduced ? 0 : st.mouseY;
+
+    const css = section.style;
+    css.setProperty("--c-mx", mx.toFixed(4));
+    css.setProperty("--c-my", my.toFixed(4));
+    css.setProperty("--c-back-x", (mx * -14) + "px");
+    css.setProperty("--c-back-y", (my * -5) + "px");
+    css.setProperty("--c-back-scale", (0.9 + progress * 0.35).toFixed(4));
+    css.setProperty("--c-back-opacity", (0.5 - panelActive * 0.15).toFixed(4));
+    css.setProperty("--c-title-y", (introExit * -160) + "px");
+    css.setProperty("--c-title-scale", (1 - introExit * 0.1).toFixed(4));
+    css.setProperty("--c-title-opacity", (1 - introExit).toFixed(4));
+    css.setProperty("--c-intro-y", (introExit * 70) + "px");
+    css.setProperty("--c-intro-opacity", (1 - introExit).toFixed(4));
+    css.setProperty("--c-shade-top", (panelActive * 0.5).toFixed(4));
+    css.setProperty("--c-shade-bottom", (sightsEnter * 0.4).toFixed(4));
+    css.setProperty("--c-panel-goal-opacity", goal.active.toFixed(4));
+    css.setProperty("--c-panel-goal-y", "calc(-50% + " + ((1 - goal.enter) * 58 - goal.exit * 70) + "px)");
+    css.setProperty("--c-panel-roadmap-opacity", roadmap.active.toFixed(4));
+    css.setProperty("--c-panel-roadmap-y", "calc(-50% + " + ((1 - roadmap.enter) * 58 - roadmap.exit * 70) + "px)");
+    css.setProperty("--c-sights-opacity", sightsEnter.toFixed(4));
+    css.setProperty("--c-sights-controls-opacity", sightsControlsEnter.toFixed(4));
+    const controls = $("#c-sights-controls");
+    if (controls) controls.classList.toggle("is-ready", sightsControlsEnter > 0.98);
+    css.setProperty("--c-sights-visibility", sightsEnter > 0.01 ? "visible" : "hidden");
+    css.setProperty("--c-sights-enter-x", ((1 - sightsEnter) * 420) + "vw");
+
+    if (Math.abs(st.smoothScroll - st.targetScroll) > 0.08 ||
+        Math.abs(st.mouseX - st.targetMouseX) > 0.001 ||
+        Math.abs(st.mouseY - st.targetMouseY) > 0.001) {
+      requestTick();
+    }
+  }
+
+  window.addEventListener("scroll", requestTick, { passive: true });
+  window.addEventListener("resize", () => { updateCinemaSights(); requestTick(); });
+  window.addEventListener("pointermove", ev => {
+    st.targetMouseX = ev.clientX / window.innerWidth - 0.5;
+    st.targetMouseY = ev.clientY / window.innerHeight - 0.5;
+    requestTick();
+  }, { passive: true });
+  const prevBtn = $(".c-sight-prev"), nextBtn = $(".c-sight-next");
+  if (prevBtn) prevBtn.addEventListener("click", () => moveCinemaSights(-1));
+  if (nextBtn) nextBtn.addEventListener("click", () => moveCinemaSights(1));
+  requestTick();
 }
 
 const canEdit = row => isAdmin() || row.author_id === S.me.id;
