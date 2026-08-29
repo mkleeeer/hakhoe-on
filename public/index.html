@@ -8,7 +8,7 @@
 <meta name="description" content="세종 금융학회의 활동, 일정, 공지, 투표, 자료를 한곳에서 운영하는 학회 플랫폼">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <script>
 (function () {
@@ -83,39 +83,18 @@
 
     <!-- 홈 -->
     <section class="page on" id="p-home">
-      <section class="cinema-scroll" id="cinema" aria-label="세종 금융학회 홈 스크롤 스토리">
-        <div class="stage">
-          <div class="c-world">
-            <div class="c-sky"></div>
-            <div class="c-back-stack">
-              <img class="c-scene c-mark" src="/img/horse-black.png" alt="">
-            </div>
-            <h1 class="c-title" id="c-title" data-i18n="brand.name">세종 금융학회</h1>
-            <div class="c-intro" id="c-intro">
-              <p id="c-intro-p"></p>
-              <div class="c-tags" id="c-tags"></div>
-            </div>
-            <section class="c-panel c-panel-goal" id="c-panel-goal">
-              <h2 id="c-panel-goal-h"></h2>
-              <p id="c-panel-goal-p"></p>
-              <dl class="c-facts" id="c-panel-goal-facts"></dl>
-            </section>
-            <section class="c-panel c-panel-roadmap" id="c-panel-roadmap">
-              <h2 data-i18n="home.roadmapTitle">이번 학기 로드맵</h2>
-              <p id="c-panel-roadmap-p"></p>
-              <button class="c-note-btn" data-go="office"><span aria-hidden="true">↗</span><span data-i18n="home.roadmap">운영 로드맵 보기</span></button>
-            </section>
-            <div class="c-shade"></div>
-            <div class="c-sights" id="c-sights" aria-label="다가오는 일정">
-              <div class="c-sights-track" id="c-sights-track"></div>
-            </div>
-            <div class="c-sights-controls" id="c-sights-controls">
-              <button class="c-sight-nav c-sight-prev" aria-label="이전">←</button>
-              <button class="c-sight-nav c-sight-next" aria-label="다음">→</button>
-            </div>
-          </div>
+      <header class="wsj-masthead">
+        <div class="wsj-masthead-top">
+          <span class="wsj-date" id="wsj-date"></span>
+          <span class="wsj-kicker" id="goal-label">이번 학기 우리의 방향</span>
         </div>
-      </section>
+        <h1 class="wsj-headline"><span id="goal-lead"></span> <em id="goal-accent"></em></h1>
+        <p class="wsj-dek" id="goal-note"></p>
+        <div class="wsj-masthead-foot">
+          <button class="wsj-link" data-go="office" data-i18n="home.roadmap">운영 로드맵 보기 →</button>
+          <span class="wsj-goalcount"><b class="tnum" id="goal-count">—</b><span data-i18n="home.coreGoals">핵심 목표</span></span>
+        </div>
+      </header>
 
       <div class="grid-2">
         <div class="col">
