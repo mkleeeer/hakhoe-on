@@ -51,7 +51,7 @@ a{color:var(--crimson-ink)}
   background:var(--crimson-field);overflow:hidden}
 .gate:before{content:"";position:absolute;left:0;right:0;top:34px;height:1px;background:rgba(240,230,220,.16)}
 .gate-art{position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);
-  height:min(80vh,780px);width:min(72vw,640px);opacity:.92;pointer-events:none;z-index:1}
+  height:min(85vh,820px);width:min(95vw,860px);opacity:.92;pointer-events:none;z-index:1}
 .gate-art-inner{width:100%;height:100%}
 .gate-art img{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center}
 
