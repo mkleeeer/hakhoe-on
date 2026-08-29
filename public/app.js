@@ -726,46 +726,16 @@ $("#logout").addEventListener("click", doLogout);
 $("#gate-lang-toggle").addEventListener("click", toggleLang);
 $("#lang-toggle").addEventListener("click", toggleLang);
 
-/* ---------------- 로그인 성공 시 말 영상 연출 ---------------- */
-const clamp01 = (v, min, max) => Math.min(max, Math.max(min, v));
-const smoothstep = (start, end, v) => {
-  const p = clamp01((v - start) / (end - start), 0, 1);
-  return p * p * (3 - 2 * p);
-};
-
-function renderHorseMotion(video, wrap) {
-  const time = video.currentTime || 0;
-  const liftIn = smoothstep(0.65, 1.65, time);
-  const liftOut = 1 - smoothstep(2.55, 3.65, time);
-  const rear = liftIn * liftOut;
-  const approach = smoothstep(4.1, 7.2, time);
-  const release = 1 - smoothstep(7.65, 9.55, time);
-  const approachBoost = Math.pow(approach, 1.25) * release;
-  const sourceClose = smoothstep(7.4, 9.75, time);
-
-  const REAR_LIFT_VH = -5, REAR_SCALE = 0.98, APPROACH_SCALE = 1.08;
-  const y = rear * REAR_LIFT_VH + approach * 5 + sourceClose * 2;
-  const x = sourceClose * -0.8;
-  const scale = 1 + rear * (REAR_SCALE - 1) + approachBoost * (APPROACH_SCALE - 1) - sourceClose * 0.04;
-  const tilt = rear * -0.65;
-
-  wrap.style.transform = "translate3d(" + x + "vw," + y + "vh,0) scale(" + scale + ") rotate(" + tilt + "deg)";
-
-  if (!video.paused && !video.ended) requestAnimationFrame(() => renderHorseMotion(video, wrap));
-}
-
+/* ---------------- 로그인 성공 시 말 연출 (평면 로고 → 입체 렌더링) ---------------- */
 function playGateHorseCharge() {
   return new Promise(resolve => {
-    const video = $("#gate-horse"), wrap = $("#gate-art-inner");
+    const wrap = $("#gate-art-inner");
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!video || !wrap || reduced) { resolve(); return; }
-    let done = false;
-    const finish = () => { if (done) return; done = true; resolve(); };
-    video.addEventListener("ended", finish, { once: true });
-    video.addEventListener("play", () => requestAnimationFrame(() => renderHorseMotion(video, wrap)), { once: true });
-    video.currentTime = 0;
-    video.play().catch(finish);
-    setTimeout(finish, 10800); // 영상 로드 실패 등 대비한 안전장치
+    if (!wrap || reduced) { resolve(); return; }
+    wrap.classList.remove("charging");
+    void wrap.offsetWidth; // 강제 리플로우 — 재로그인 시 애니메이션 재시작 보장
+    wrap.classList.add("charging");
+    setTimeout(resolve, 1300);
   });
 }
 

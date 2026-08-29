@@ -52,11 +52,35 @@ a{color:var(--crimson-ink)}
 .gate:before{content:"";position:absolute;left:0;right:0;top:34px;height:1px;background:rgba(240,230,220,.16)}
 .gate-art{position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);
   height:min(80vh,780px);width:min(72vw,640px);opacity:.92;pointer-events:none;z-index:1}
-.gate-art-inner{width:100%;height:100%;transform-origin:50% 82%;will-change:transform}
-.gate-art video{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center;
-  filter:drop-shadow(0 30px 56px rgba(0,0,0,.4))}
+.gate-art-inner{width:100%;height:100%;transform-origin:50% 89%;will-change:transform}
+.gate-art img{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center;
+  filter:brightness(0)}
+
+/* 로그인 성공 — 옆을 보던 말(평면 로고 느낌)이 앞발질하다가 정면으로 돌아
+   달려오며 입체 렌더링으로 "밝아지는" 연출 */
+@keyframes horsePaw{
+  0%{transform:scale(1) translateY(0) rotate(0deg)}
+  6%{transform:scale(1.02) translateY(-4%) rotate(-9deg)}
+  13%{transform:scale(1.03) translateY(1.5%) rotate(8deg)}
+  20%{transform:scale(1.04) translateY(-5%) rotate(-10deg)}
+  27%{transform:scale(1.04) translateY(1.5%) rotate(8deg)}
+  34%{transform:scale(1.06) translateY(-4%) rotate(-7deg)}
+  41%{transform:scale(1.06) translateY(1%) rotate(6deg)}
+  48%{transform:scale(1.08) translateY(-2%) rotate(-3deg)}
+  55%{transform:scale(1.08) translateY(0) rotate(1deg)}
+  66%{transform:scale(1.18) translateY(0) rotate(0deg)}
+  100%{transform:scale(2.05) translateY(0) rotate(0deg)}
+}
+@keyframes horseReveal{
+  0%{filter:brightness(0)}
+  52%{filter:brightness(0)}
+  100%{filter:brightness(1) drop-shadow(0 30px 56px rgba(0,0,0,.45)) saturate(1.05)}
+}
+.gate-art-inner.charging{animation:horsePaw 1.3s cubic-bezier(.28,.05,.35,1) forwards}
+.gate-art-inner.charging img{animation:horseReveal 1.3s ease-in forwards}
 @media (prefers-reduced-motion: reduce){
-  .gate-art-inner{transform:none !important}
+  .gate-art-inner.charging{animation:none}
+  .gate-art-inner.charging img{animation:none}
 }
 .gate-box{position:relative;z-index:2;width:min(400px,100%);text-align:center;color:var(--cream)}
 .gate-mark{display:inline-grid;place-items:center;width:56px;height:56px;margin-bottom:20px;
