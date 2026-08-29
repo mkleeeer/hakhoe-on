@@ -730,15 +730,26 @@ $("#lang-toggle").addEventListener("click", toggleLang);
 function playGateHorseCharge() {
   return new Promise(resolve => {
     const video = $("#gate-charge-video");
+    const box = $(".gate-box");
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!video || reduced) { resolve(); return; }
     let done = false;
     const finish = () => { if (done) return; done = true; resolve(); };
-    video.addEventListener("ended", finish, { once: true });
-    video.currentTime = 0;
-    video.classList.add("playing");
-    video.play().then(() => {}).catch(finish);
-    setTimeout(finish, 9500); // 영상 로드 실패 등 대비한 안전장치
+
+    const startVideo = () => {
+      video.addEventListener("ended", finish, { once: true });
+      video.currentTime = 0;
+      video.classList.add("playing");
+      video.play().then(() => {}).catch(finish);
+      setTimeout(finish, 9500); // 영상 로드 실패 등 대비한 안전장치
+    };
+
+    if (box) {
+      box.classList.add("fading");
+      setTimeout(startVideo, 550); // 텍스트/버튼이 사라지고 순수 실루엣만 남는 시간
+    } else {
+      startVideo();
+    }
   });
 }
 

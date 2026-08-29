@@ -63,7 +63,9 @@ a{color:var(--crimson-ink)}
 @media (prefers-reduced-motion: reduce){
   .gate-charge-video{display:none}
 }
-.gate-box{position:relative;z-index:2;width:min(400px,100%);text-align:center;color:var(--cream)}
+.gate-box{position:relative;z-index:2;width:min(400px,100%);text-align:center;color:var(--cream);
+  transition:opacity .5s ease}
+.gate-box.fading{opacity:0;pointer-events:none}
 .gate-mark{display:inline-grid;place-items:center;width:56px;height:56px;margin-bottom:20px;
   border:1px solid rgba(240,230,220,.4);font-family:'Bodoni Moda',serif;font-size:18px;font-weight:700;
   letter-spacing:.04em;color:var(--cream)}
