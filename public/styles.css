@@ -52,18 +52,20 @@ a{color:var(--crimson-ink)}
 .gate:before{content:"";position:absolute;left:0;right:0;top:34px;height:1px;background:rgba(240,230,220,.16)}
 .gate-art{position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);
   height:min(85vh,820px);width:min(95vw,860px);opacity:.92;pointer-events:none;z-index:1}
-.gate-art-inner{width:100%;height:100%;position:relative}
-.gate-art img,.gate-art video{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center}
-.gate-art video{position:absolute;inset:0;opacity:0}
+.gate-art-inner{width:100%;height:100%}
+.gate-art img{display:block;width:100%;height:100%;object-fit:contain;object-position:bottom center}
 
 /* 로그인 성공 — 배경·텍스트는 그대로 두고, 첫 프레임이 로고와 동일한
-   영상으로 조용히 바꿔치기해서 "같은 말이 그 자리에서 움직이기 시작한"
-   것처럼 보이게 함 (화면 전환·컷 없음) */
-.gate-art-inner.charging img{opacity:0}
-.gate-art-inner.charging video{opacity:1}
+   영상을 전체화면 배경으로 깔아서(경계선 없이 색까지 이어지게) "같은
+   말이 그 자리에서 움직이기 시작한" 것처럼 보이게 함. 텍스트(gate-box)는
+   z-index로 항상 그 위에 그대로 유지됨 */
+.gate-horse-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:1;opacity:0;pointer-events:none}
+.gate-horse-video.charging{opacity:1}
+.gate.charging .gate-art{opacity:0}
 @media (prefers-reduced-motion: reduce){
-  .gate-art-inner.charging video{display:none}
-  .gate-art-inner.charging img{opacity:1}
+  .gate-horse-video.charging{display:none}
+  .gate.charging .gate-art{opacity:.92}
 }
 .gate-box{position:relative;z-index:2;width:min(400px,100%);text-align:center;color:var(--cream)}
 .gate-mark{display:inline-grid;place-items:center;width:56px;height:56px;margin-bottom:20px;
